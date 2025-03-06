@@ -32,15 +32,6 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DockerModem = void 0;
 const http = __importStar(require("http"));
@@ -53,44 +44,42 @@ class DockerModem {
         this.port = props.port || 2375;
         this.protocol = props.protocol || "http";
     }
-    request(endpoint, method, queryParams) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => {
-                const query = queryParams ? qs.stringify(queryParams) : undefined;
-                const path = query ? `${endpoint}?${query}` : endpoint;
-                const options = {
-                    socketPath: this.socketPath,
-                    path,
-                    method,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                };
-                const requestModule = this.protocol === "https" ? https : http;
-                const req = requestModule.request(options, (res) => {
-                    let data = "";
-                    res.on("data", (chunk) => {
-                        data += chunk;
-                    });
-                    res.on("end", () => {
-                        if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
-                            try {
-                                resolve(JSON.parse(data)); // Parse JSON response
-                            }
-                            catch (err) {
-                                reject(`Failed to parse JSON: ${err}`);
-                            }
-                        }
-                        else {
-                            reject(`Request failed with status code: ${res.statusCode}`);
-                        }
-                    });
+    async request(endpoint, method, queryParams) {
+        return new Promise((resolve, reject) => {
+            const query = queryParams ? qs.stringify(queryParams) : undefined;
+            const path = query ? `${endpoint}?${query}` : endpoint;
+            const options = {
+                socketPath: this.socketPath,
+                path,
+                method,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            };
+            const requestModule = this.protocol === "https" ? https : http;
+            const req = requestModule.request(options, (res) => {
+                let data = "";
+                res.on("data", (chunk) => {
+                    data += chunk;
                 });
-                req.on("error", (err) => {
-                    reject(`Request error: ${err.message}`);
+                res.on("end", () => {
+                    if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300) {
+                        try {
+                            resolve(JSON.parse(data)); // Parse JSON response
+                        }
+                        catch (err) {
+                            reject(`Failed to parse JSON: ${err}`);
+                        }
+                    }
+                    else {
+                        reject(`Request failed with status code: ${res.statusCode}`);
+                    }
                 });
-                req.end();
             });
+            req.on("error", (err) => {
+                reject(`Request error: ${err.message}`);
+            });
+            req.end();
         });
     }
 }

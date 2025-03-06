@@ -1,8 +1,11 @@
 import { DockerModem } from "../modem";
 import {
+  ContainerChangesFilesystemContext,
   ContainerInspectContext,
   ContainerListContext,
+  ContainerLogsContext,
   ContainerProcessContext,
+  ContainerStatsContext,
 } from "./context";
 
 export class Container {
@@ -23,5 +26,17 @@ export class Container {
 
   public processes(containerID: string): ContainerProcessContext {
     return new ContainerProcessContext(this.modem, containerID);
+  }
+
+  public stats(containerID: string): ContainerStatsContext {
+    return new ContainerStatsContext(this.modem, containerID);
+  }
+
+  public changes(containerID: string): ContainerChangesFilesystemContext {
+    return new ContainerChangesFilesystemContext(this.modem, containerID);
+  }
+
+  public logs(containerID: string): ContainerLogsContext {
+    return new ContainerLogsContext(this.modem, containerID);
   }
 }

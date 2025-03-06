@@ -15,5 +15,14 @@ class Container {
     processes(containerID) {
         return new context_1.ContainerProcessContext(this.modem, containerID);
     }
+    stats(containerID) {
+        return new context_1.ContainerStatsContext(this.modem, containerID);
+    }
+    changes(containerID) {
+        return new context_1.ContainerChangesFilesystemContext(this.modem, containerID);
+    }
+    logs(containerID) {
+        return new context_1.ContainerLogsContext(this.modem, containerID);
+    }
 }
 exports.Container = Container;

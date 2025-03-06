@@ -1,6 +1,9 @@
 import { DockerModem } from "../../modem";
 
 export class ContainerInspectContext {
+  /**
+   * Return low-level information about a container.
+   */
   private modem: DockerModem;
   private query: { size?: string } = {};
   private endpoint: string;

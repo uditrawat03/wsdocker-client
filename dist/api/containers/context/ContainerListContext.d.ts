@@ -1,5 +1,8 @@
 import { DockerModem } from "../../modem";
 export declare class ContainerListContext {
+    /**
+     * Returns a list of containers.
+     */
     private modem;
     private query;
     private endpoint;

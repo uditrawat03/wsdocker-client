@@ -8,6 +8,9 @@ type ContainerListQuery = {
 };
 
 export class ContainerListContext {
+  /**
+   * Returns a list of containers.
+   */
   private modem: DockerModem;
   private query: ContainerListQuery = {};
   private endpoint: string = "/containers/json";
