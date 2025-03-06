@@ -44,6 +44,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DockerModem = void 0;
 const http = __importStar(require("http"));
+const https = __importStar(require("https"));
 const qs = __importStar(require("qs"));
 class DockerModem {
     constructor(props) {
@@ -65,7 +66,8 @@ class DockerModem {
                         "Content-Type": "application/json",
                     },
                 };
-                const req = http.request(options, (res) => {
+                const requestModule = this.protocol === "https" ? https : http;
+                const req = requestModule.request(options, (res) => {
                     let data = "";
                     res.on("data", (chunk) => {
                         data += chunk;
